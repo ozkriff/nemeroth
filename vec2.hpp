@@ -31,28 +31,28 @@ struct Vec2 {
     Vec2& operator*=(const Vec2& v) { *this * v; return *this; }
     Vec2& operator/=(const Vec2& v) { *this / v; return *this; }
 
-	friend bool operator==(const Vec2& a, const Vec2& b) {
-		return (a.x == b.x) && (a.y == b.y);
-	}
+    friend bool operator==(const Vec2& a, const Vec2& b) {
+        return (a.x == b.x) && (a.y == b.y);
+    }
 
-	friend bool operator!=(const Vec2& a, const Vec2& b) {
-		return !(a == b);
-	}
+    friend bool operator!=(const Vec2& a, const Vec2& b) {
+        return !(a == b);
+    }
 
     friend bool operator>(const Vec2& a, const Vec2& b) {
-		return euclidean_norm(a) > euclidean_norm(b);
+        return euclidean_norm(a) > euclidean_norm(b);
     }
 
     friend bool operator<(const Vec2& a, const Vec2& b) {
-		return b > a;
+        return b > a;
     }
 
     friend bool operator>=(const Vec2& a, const Vec2& b) {
-		return !(a < b);
+        return !(a < b);
     }
 
     friend bool operator<=(const Vec2& a, const Vec2& b) {
-		return !(a > b);
+        return !(a > b);
     }
 
     Vec2 operator-() const {
