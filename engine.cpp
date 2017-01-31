@@ -120,7 +120,10 @@ void App::process_input() {
         sprite_pos.x = 5;
     }
     if (sprite_pos.x != 0 && sprite_pos.y != 0) {
-        sprite_pos *= REC_SQRT2;
+        // Inverse square root of two, for normalising velocity
+        constexpr float inv_sqrt_2 = 0.7071067811865475;
+
+        sprite_pos *= inv_sqrt_2;
     }
 }
 

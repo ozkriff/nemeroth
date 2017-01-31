@@ -6,9 +6,6 @@
 #include <SDL2/SDL_image.h>
 #include "vec2.hpp"
 
-/// Inverse square root of two, for normalising velocity
-constexpr float REC_SQRT2 = 0.7071067811865475;
-
 enum InputState {
     NOTHING_PRESSED = 0,
     UP_PRESSED = 1,
