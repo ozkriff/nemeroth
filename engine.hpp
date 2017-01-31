@@ -44,7 +44,7 @@ class App {
 
     int active_state; // TODO: InputState active_state
 
-	Vec2<int> sprite_pos;
+    Vec2<int> sprite_pos;
 
     bool is_running;
 
