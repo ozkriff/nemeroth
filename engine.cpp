@@ -46,8 +46,7 @@ App::App()
   : context{},
     image{context, std::string{"assets/daemon.png"}},
     active_state{NOTHING_PRESSED},
-    vx{0},
-    vy{0},
+    sprite_pos{0, 0},
     is_running{true}
 {
     image.dest.x = 200;
@@ -56,8 +55,8 @@ App::App()
 
 void App::tick() {
     process_input();
-    image.dest.x += vx;
-    image.dest.y += vy;
+    image.dest.x += sprite_pos.x;
+    image.dest.y += sprite_pos.y;
     draw();
 }
 
@@ -107,23 +106,21 @@ void App::process_input() {
                 break;
         }
     }
-    vy = 0;
-    vx = 0;
+    sprite_pos = Vec2<int>{};
     if (active_state & UP_PRESSED) {
-        vy = -5;
+        sprite_pos.y = -5;
     }
     if (active_state & DOWN_PRESSED) {
-        vy = 5;
+        sprite_pos.y = 5;
     }
     if (active_state & LEFT_PRESSED) {
-        vx = -5;
+        sprite_pos.x = -5;
     }
     if (active_state & RIGHT_PRESSED) {
-        vx = 5;
+        sprite_pos.x = 5;
     }
-    if (vx != 0 && vy != 0) {
-        vx *= REC_SQRT2;
-        vy *= REC_SQRT2;
+    if (sprite_pos.x != 0 && sprite_pos.y != 0) {
+        sprite_pos *= REC_SQRT2;
     }
 }
 

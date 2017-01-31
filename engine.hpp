@@ -1,6 +1,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "vec2.hpp"
 
 /// Inverse square root of two, for normalising velocity
 constexpr float REC_SQRT2 = 0.7071067811865475;
@@ -43,8 +44,7 @@ class App {
 
     int active_state; // TODO: InputState active_state
 
-    int vx;
-    int vy;
+	Vec2<int> sprite_pos;
 
     bool is_running;
 
