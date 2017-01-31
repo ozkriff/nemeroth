@@ -37,6 +37,11 @@ Context::Context()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
+Context::~Context() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+}
+
 App::App()
   : context{},
     image{context, std::string{"assets/daemon.png"}},

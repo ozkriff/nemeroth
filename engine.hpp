@@ -20,6 +20,7 @@ struct Context {
     // TODO: const SDL_Renderer& renderer() const;
 
     Context();
+    ~Context();
 };
 
 class Image {
