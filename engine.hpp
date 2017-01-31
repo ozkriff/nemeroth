@@ -40,14 +40,10 @@ public:
 
 class App {
     Context context_;
-
     Vec2i sprite_pos_;
     Vec2i sprite_velocity_;
     Image image_;
-
     int active_state_; // TODO: InputState active_state
-
-
     bool is_running_;
 
     void draw();
