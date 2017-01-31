@@ -1,3 +1,6 @@
+#ifndef ENGINE_HPP
+#define ENGINE_HPP
+
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -57,4 +60,4 @@ public:
     void run();
 };
 
-
+#endif

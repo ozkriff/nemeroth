@@ -1,5 +1,5 @@
-#ifndef VEC2_H
-#define VEC2_H
+#ifndef VEC2_HPP
+#define VEC2_HPP
 
 #include <cfloat>
 #include <cmath>
