@@ -48,78 +48,78 @@ Context::~Context() {
 }
 
 App::App()
-  : context{},
-    sprite_pos{200, 100},
-    sprite_velocity{0, 0},
-    image{context, std::string{"assets/daemon.png"}}, // TODO: extract from engine
-    active_state{NOTHING_PRESSED},
-    is_running{true}
+  : context_{},
+    sprite_pos_{200, 100},
+    sprite_velocity_{0, 0},
+    image_{context_, std::string{"assets/daemon.png"}}, // TODO: extract from engine
+    active_state_{NOTHING_PRESSED},
+    is_running_{true}
 {}
 
 void App::tick() {
     process_input();
-    sprite_pos += sprite_velocity;
+    sprite_pos_ += sprite_velocity_;
     draw();
 }
 
 void App::draw() {
-    SDL_RenderClear(&context.renderer());
-    image.draw_at(context, sprite_pos);
-    SDL_RenderPresent(&context.renderer());
+    SDL_RenderClear(&context_.renderer());
+    image_.draw_at(context_, sprite_pos_);
+    SDL_RenderPresent(&context_.renderer());
 }
 
 void App::process_input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            is_running = false;
+            is_running_ = false;
         }
         switch (event.key.keysym.sym) {
             case SDLK_UP:
                 if (event.key.type == SDL_KEYDOWN) {
-                    active_state |= UP_PRESSED;
+                    active_state_ |= UP_PRESSED;
                 } else if (event.key.type == SDL_KEYUP) {
-                    active_state ^= UP_PRESSED;
+                    active_state_ ^= UP_PRESSED;
                 }
                 break;
             case SDLK_DOWN:
                 if (event.key.type == SDL_KEYDOWN) {
-                    active_state |= DOWN_PRESSED;
+                    active_state_ |= DOWN_PRESSED;
                 } else if (event.key.type == SDL_KEYUP) {
-                    active_state ^= DOWN_PRESSED;
+                    active_state_ ^= DOWN_PRESSED;
                 }
                 break;
             case SDLK_LEFT:
                 if (event.key.type == SDL_KEYDOWN)
-                    active_state |= LEFT_PRESSED;
+                    active_state_ |= LEFT_PRESSED;
                 else if (event.key.type == SDL_KEYUP)
-                    active_state ^= LEFT_PRESSED;
+                    active_state_ ^= LEFT_PRESSED;
                 break;
             case SDLK_RIGHT:
                 if (event.key.type == SDL_KEYDOWN)
-                    active_state |= RIGHT_PRESSED;
+                    active_state_ |= RIGHT_PRESSED;
                 else if (event.key.type == SDL_KEYUP)
-                    active_state ^= RIGHT_PRESSED;
+                    active_state_ ^= RIGHT_PRESSED;
                 break;
             case SDLK_q:
             case SDLK_ESCAPE:
-                is_running = false;
+                is_running_ = false;
             default:
                 break;
         }
     }
-    sprite_velocity = Vec2i{};
-    if (active_state & UP_PRESSED) {
-        sprite_velocity.y = -5;
+    sprite_velocity_ = Vec2i{};
+    if (active_state_ & UP_PRESSED) {
+        sprite_velocity_.y = -5;
     }
-    if (active_state & DOWN_PRESSED) {
-        sprite_velocity.y = 5;
+    if (active_state_ & DOWN_PRESSED) {
+        sprite_velocity_.y = 5;
     }
-    if (active_state & LEFT_PRESSED) {
-        sprite_velocity.x = -5;
+    if (active_state_ & LEFT_PRESSED) {
+        sprite_velocity_.x = -5;
     }
-    if (active_state & RIGHT_PRESSED) {
-        sprite_velocity.x = 5;
+    if (active_state_ & RIGHT_PRESSED) {
+        sprite_velocity_.x = 5;
     }
 }
 
@@ -142,7 +142,7 @@ void App::run() {
 }
 #else
 void App::run() {
-    while (is_running) {
+    while (is_running_) {
         tick();
         SDL_Delay(1000 / 60);
     }

@@ -39,16 +39,16 @@ public:
 };
 
 class App {
-    Context context;
+    Context context_;
 
-    Vec2i sprite_pos;
-    Vec2i sprite_velocity;
-    Image image;
+    Vec2i sprite_pos_;
+    Vec2i sprite_velocity_;
+    Image image_;
 
-    int active_state; // TODO: InputState active_state
+    int active_state_; // TODO: InputState active_state
 
 
-    bool is_running;
+    bool is_running_;
 
     void draw();
     void process_input();
