@@ -1,7 +1,12 @@
+#include <iostream>
 #include "engine.hpp"
 
 int main() {
-    Context context{};
-    context.run();
+    try {
+        App app{};
+        app.run();
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
     return 0;
 }

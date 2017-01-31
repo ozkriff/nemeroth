@@ -1,10 +1,10 @@
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 /// Inverse square root of two, for normalising velocity
 constexpr float REC_SQRT2 = 0.7071067811865475;
 
-/// Set of input states
 enum InputState {
     NOTHING_PRESSED = 0,
     UP_PRESSED = 1,
@@ -13,28 +13,35 @@ enum InputState {
     RIGHT_PRESSED = 1<<3
 };
 
-class Image {
-    SDL_Rect dest;
-    SDL_Texture* tex;
-public:
-    Image();
-    ~Image();
-
-    void draw();
-};
-
-/// Context structure that will be passed to the loop handler
-class Context {
+struct Context {
     SDL_Renderer* renderer;
     SDL_Window* window;
 
-    /// Rectangle that the owl texture will be rendered into
-    SDL_Rect dest;
+    // TODO: const SDL_Renderer& renderer() const;
+
+    Context();
+};
+
+class Image {
+public: // TODO
+    SDL_Rect dest; // TODO убрать
     SDL_Texture* tex;
+
+public:
+    Image(const Context& context, const std::string& name);
+    ~Image();
+
+    void draw(const Context& context);
+};
+
+class App {
+    Context context;
+
+    // SDL_Rect dest;
+    Image image;
 
     int active_state; // TODO: InputState active_state
 
-    /// x and y components of owl's velocity
     int vx;
     int vy;
 
@@ -42,10 +49,9 @@ class Context {
 
     void draw();
     void process_input();
-    int get_texture();
 
 public:
-    Context();
+    App();
     void tick();
     void run();
 };

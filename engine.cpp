@@ -3,75 +3,66 @@
 #include <emscripten.h>
 #endif
 
+#include <stdexcept>
 #include "engine.hpp"
 
-Image::Image()
+Image::Image(const Context& context, const std::string& name)
   : dest{},
     tex{nullptr}
 {
-    SDL_Surface* image = IMG_Load("assets/daemon.png"); // TODO: Обернуть в свой тип
+    SDL_Surface* image = IMG_Load(name.c_str());
     if (!image) {
-         printf("IMG_Load: %s\n", IMG_GetError());
-         // return 0;
-         // TODO: throw ...
+         throw std::runtime_error(IMG_GetError());
     }
-    tex = SDL_CreateTextureFromSurface(renderer, image);
+    tex = SDL_CreateTextureFromSurface(context.renderer, image);
     dest.w = image->w;
     dest.h = image->h;
     SDL_FreeSurface(image);
 }
 
 Image::~Image() {
-    // TODO: освободить текстурку
+    SDL_DestroyTexture(tex);
 }
 
-// TODO: исключения вмето инта
-/// Loads the texture into the Context
-int Context::get_texture() {
-    SDL_Surface* image = IMG_Load("assets/daemon.png"); // TODO: Обернуть в свой тип
-    if (!image) {
-         printf("IMG_Load: %s\n", IMG_GetError());
-         return 0;
-    }
-    tex = SDL_CreateTextureFromSurface(renderer, image);
-    dest.w = image->w;
-    dest.h = image->h;
-    SDL_FreeSurface(image);
-    return 1;
+void Image::draw(const Context& context) {
+    SDL_RenderCopy(context.renderer, tex, nullptr, &dest);
 }
 
 Context::Context()
   : renderer{nullptr},
-    window{nullptr},
-    dest{},
-    tex{nullptr},
+    window{nullptr}
+{
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_CreateWindowAndRenderer(600, 400, 0, &window, &renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+}
+
+App::App()
+  : context{},
+    image{context, std::string{"assets/daemon.png"}},
     active_state{NOTHING_PRESSED},
     vx{0},
     vy{0},
     is_running{true}
 {
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(600, 400, 0, &window, &renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    get_texture();
-    dest.x = 200;
-    dest.y = 100;
+    image.dest.x = 200;
+    image.dest.y = 100;
 }
 
-void Context::tick() {
+void App::tick() {
     process_input();
-    dest.x += vx;
-    dest.y += vy;
+    image.dest.x += vx;
+    image.dest.y += vy;
     draw();
 }
 
-void Context::draw() {
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, tex, NULL, &dest);
-    SDL_RenderPresent(renderer);
+void App::draw() {
+    SDL_RenderClear(context.renderer);
+    image.draw(context);
+    SDL_RenderPresent(context.renderer);
 }
 
-void Context::process_input() {
+void App::process_input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -133,15 +124,23 @@ void Context::process_input() {
 
 #ifdef __EMSCRIPTEN__
 static void emscripten_tick(void* arg) {
-    Context* context = static_cast<Context*>(arg);
-    context->tick();
+    App* app = static_cast<App*>(arg);
+    app->tick();
 }
 
-void Context::run() {
-    emscripten_set_main_loop_arg(emscripten_tick, this, -1, 1);
+void App::run() {
+    bool simulate_infinite_loop = true;
+
+    // Number of frames per second at which the JavaScript will call the
+    // function. Setting int <=0 (recommended) uses the browser’s
+    // requestAnimationFrame mechanism to call the function.
+    int fps = 0;
+
+    emscripten_set_main_loop_arg(
+        emscripten_tick, this, fps, simulate_infinite_loop);
 }
 #else
-void Context::run() {
+void App::run() {
     while (is_running) {
         tick();
         SDL_Delay(1000 / 60);
