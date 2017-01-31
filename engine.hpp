@@ -14,37 +14,39 @@ enum InputState {
     RIGHT_PRESSED = 1<<3
 };
 
-struct Context {
-    SDL_Renderer* renderer;
-    SDL_Window* window;
+class Context {
+    SDL_Renderer* renderer_;
+    SDL_Window* window_;
 
-    // TODO: const SDL_Renderer& renderer() const;
+public:
+    const SDL_Renderer& renderer() const { return *renderer_; }
+    SDL_Renderer& renderer() { return *renderer_; }
 
     Context();
     ~Context();
 };
 
 class Image {
-public: // TODO
-    SDL_Rect dest; // TODO убрать
-    SDL_Texture* tex;
+    Vec2i size_;
+    SDL_Texture* tex_;
 
 public:
-    Image(const Context& context, const std::string& name);
+    Image(Context& context, const std::string& name);
     ~Image();
 
-    void draw(const Context& context);
+    void draw_at(Context& context, const Vec2i& pos) const;
+    const Vec2i& size() const;
 };
 
 class App {
     Context context;
 
-    // SDL_Rect dest;
+    Vec2i sprite_pos;
+    Vec2i sprite_velocity;
     Image image;
 
     int active_state; // TODO: InputState active_state
 
-    Vec2<int> sprite_pos;
 
     bool is_running;
 

@@ -6,64 +6,66 @@
 #include <stdexcept>
 #include "engine.hpp"
 
-Image::Image(const Context& context, const std::string& name)
-  : dest{},
-    tex{nullptr}
+Image::Image(Context& context, const std::string& name)
+  : size_{},
+    tex_{nullptr}
 {
     SDL_Surface* image = IMG_Load(name.c_str());
     if (!image) {
          throw std::runtime_error(IMG_GetError());
     }
-    tex = SDL_CreateTextureFromSurface(context.renderer, image);
-    dest.w = image->w;
-    dest.h = image->h;
+    tex_ = SDL_CreateTextureFromSurface(&context.renderer(), image);
+    size_.x = image->w;
+    size_.y = image->h;
     SDL_FreeSurface(image);
 }
 
 Image::~Image() {
-    SDL_DestroyTexture(tex);
+    SDL_DestroyTexture(tex_);
 }
 
-void Image::draw(const Context& context) {
-    SDL_RenderCopy(context.renderer, tex, nullptr, &dest);
+void Image::draw_at(Context& context, const Vec2i& pos) const {
+    const SDL_Rect dest{pos.x, pos.y, size().x, size().y};
+    SDL_RenderCopy(&context.renderer(), tex_, nullptr, &dest);
+}
+
+const Vec2i& Image::size() const {
+    return size_;
 }
 
 Context::Context()
-  : renderer{nullptr},
-    window{nullptr}
+  : renderer_{nullptr},
+    window_{nullptr}
 {
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(600, 400, 0, &window, &renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_CreateWindowAndRenderer(600, 400, 0, &window_, &renderer_);
+    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
 }
 
 Context::~Context() {
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer_);
+    SDL_DestroyWindow(window_);
 }
 
 App::App()
   : context{},
-    image{context, std::string{"assets/daemon.png"}},
+    sprite_pos{200, 100},
+    sprite_velocity{0, 0},
+    image{context, std::string{"assets/daemon.png"}}, // TODO: extract from engine
     active_state{NOTHING_PRESSED},
-    sprite_pos{0, 0},
     is_running{true}
-{
-    image.dest.x = 200;
-    image.dest.y = 100;
-}
+{}
 
 void App::tick() {
     process_input();
-    image.dest.x += sprite_pos.x;
-    image.dest.y += sprite_pos.y;
+    sprite_pos += sprite_velocity;
     draw();
 }
 
 void App::draw() {
-    SDL_RenderClear(context.renderer);
-    image.draw(context);
-    SDL_RenderPresent(context.renderer);
+    SDL_RenderClear(&context.renderer());
+    image.draw_at(context, sprite_pos);
+    SDL_RenderPresent(&context.renderer());
 }
 
 void App::process_input() {
@@ -106,24 +108,18 @@ void App::process_input() {
                 break;
         }
     }
-    sprite_pos = Vec2<int>{};
+    sprite_velocity = Vec2i{};
     if (active_state & UP_PRESSED) {
-        sprite_pos.y = -5;
+        sprite_velocity.y = -5;
     }
     if (active_state & DOWN_PRESSED) {
-        sprite_pos.y = 5;
+        sprite_velocity.y = 5;
     }
     if (active_state & LEFT_PRESSED) {
-        sprite_pos.x = -5;
+        sprite_velocity.x = -5;
     }
     if (active_state & RIGHT_PRESSED) {
-        sprite_pos.x = 5;
-    }
-    if (sprite_pos.x != 0 && sprite_pos.y != 0) {
-        // Inverse square root of two, for normalising velocity
-        constexpr float inv_sqrt_2 = 0.7071067811865475;
-
-        sprite_pos *= inv_sqrt_2;
+        sprite_velocity.x = 5;
     }
 }
 

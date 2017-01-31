@@ -1,6 +1,6 @@
 CXX_FLAGS += -O2
 CXX_FLAGS += -std=c++14
-CXX_FLAGS += -Wall -Wextra -pedantic
+CXX_FLAGS += -Wall -Wextra -Wconversion -pedantic
 
 EMCC_FLAGS += -s USE_SDL=2
 EMCC_FLAGS += -s USE_SDL_IMAGE=2

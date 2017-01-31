@@ -21,15 +21,21 @@ struct Vec2 {
         y(y)
     {}
 
-    Vec2 operator+(const Vec2& v) const { return Vec2{x + v.x, y + v.y}; }
-    Vec2 operator-(const Vec2& v) const { return Vec2{x - v.x, y - v.y}; }
-    Vec2 operator*(const Vec2& v) const { return Vec2{x * v.x, y * v.y}; }
-    Vec2 operator/(const Vec2& v) const { return Vec2{x / v.x, y / v.y}; }
+    Vec2 operator+(const Vec2& v) const { return Vec2{x, y} += v; }
+    Vec2 operator-(const Vec2& v) const { return Vec2{x, y} -= v; }
+    Vec2 operator*(const Vec2& v) const { return Vec2{x, y} *= v; }
+    Vec2 operator/(const Vec2& v) const { return Vec2{x, y} /= v; }
 
-    Vec2& operator+=(const Vec2& v) { *this + v; return *this; }
-    Vec2& operator-=(const Vec2& v) { *this - v; return *this; }
-    Vec2& operator*=(const Vec2& v) { *this * v; return *this; }
-    Vec2& operator/=(const Vec2& v) { *this / v; return *this; }
+    Vec2& operator+=(const Vec2& v) { x += v.x; y += v.y; return *this; }
+    Vec2& operator-=(const Vec2& v) { x -= v.x; y -= v.y; return *this; }
+    Vec2& operator*=(const Vec2& v) { x *= v.x; y *= v.y; return *this; }
+    Vec2& operator/=(const Vec2& v) { x /= v.x; y /= v.y; return *this; }
+
+    Vec2 operator*(const T& s) const { return Vec2{x, y} *= s; }
+    Vec2 operator/(const T& s) const { return Vec2{x, y} /= s; }
+
+    Vec2& operator*=(const T& s) { x *= s; y *= s; return *this; }
+    Vec2& operator/=(const T& s) { x /= s; y /= s; return *this; }
 
     friend bool operator==(const Vec2& a, const Vec2& b) {
         return (a.x == b.x) && (a.y == b.y);
@@ -58,18 +64,10 @@ struct Vec2 {
     Vec2 operator-() const {
         return Vec2{-x, -y};
     }
-
-    Vec2 operator*(const T& scalar) const {
-        return Vec2{x * scalar, y * scalar};
-    }
-
-    Vec2 operator/(const T& scalar) const {
-        return Vec2{x / scalar, y / scalar};
-    }
-
-    Vec2& operator*=(const T& scalar) { *this * scalar; return *this; }
-    Vec2& operator/=(const T& scalar) { *this / scalar; return *this; }
 };
+
+typedef Vec2<float> Vec2f;
+typedef Vec2<int> Vec2i;
 
 template<class T>
 T dot_product(const Vec2<T>& a, const Vec2<T>& b) {
