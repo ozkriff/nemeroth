@@ -38,14 +38,17 @@ class App {
     Image image_;
     bool is_running_;
 
-    // TODO: postfix `_`
-    void draw();
-    void process_input();
+    void draw_();
+    void process_input_();
     void update_sprite_pos_();
+    void tick_();
+
+#ifdef __EMSCRIPTEN__
+    static void emscripten_tick_(void* arg);
+#endif
 
 public:
     App();
-    void tick(); // TODO: make private
     void run();
 };
 

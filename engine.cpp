@@ -63,19 +63,19 @@ App::App()
     is_running_{true}
 {}
 
-void App::tick() {
-    process_input();
+void App::tick_() {
+    process_input_();
     update_sprite_pos_();
-    draw();
+    draw_();
 }
 
-void App::draw() {
+void App::draw_() {
     SDL_RenderClear(&context_.renderer());
     image_.draw_at(context_, sprite_pos_);
     SDL_RenderPresent(&context_.renderer());
 }
 
-void App::process_input() {
+void App::process_input_() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -118,9 +118,9 @@ void App::update_sprite_pos_() {
 }
 
 #ifdef __EMSCRIPTEN__
-static void emscripten_tick(void* arg) {
+void App::emscripten_tick_(void* arg) {
     App* app = static_cast<App*>(arg);
-    app->tick();
+    app->tick_();
 }
 
 void App::run() {
@@ -132,12 +132,12 @@ void App::run() {
     int fps = 0;
 
     emscripten_set_main_loop_arg(
-        emscripten_tick, this, fps, simulate_infinite_loop);
+        emscripten_tick_, this, fps, simulate_infinite_loop);
 }
 #else
 void App::run() {
     while (is_running_) {
-        tick();
+        tick_(); // TODO: pass deltatime
         SDL_Delay(1000 / 60);
     }
 }
