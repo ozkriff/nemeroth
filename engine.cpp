@@ -29,6 +29,14 @@ void Image::draw_at(Context& context, const Vec2i& pos) const {
     SDL_RenderCopy(&context.renderer(), tex_, nullptr, &dest);
 }
 
+void Image::draw_at(Context& context, const Vec2f& pos) const {
+    const Vec2i pos_i = {
+        static_cast<int>(pos.x),
+        static_cast<int>(pos.y),
+    };
+    draw_at(context, pos_i);
+}
+
 const Vec2i& Image::size() const {
     return size_;
 }
@@ -50,15 +58,14 @@ Context::~Context() {
 App::App()
   : context_{},
     sprite_pos_{200, 100},
-    sprite_velocity_{0, 0},
+    mouse_pos_{sprite_pos_},
     image_{context_, std::string{"assets/daemon.png"}}, // TODO: extract from engine
-    active_state_{NOTHING_PRESSED},
     is_running_{true}
 {}
 
 void App::tick() {
     process_input();
-    sprite_pos_ += sprite_velocity_;
+    update_sprite_pos_();
     draw();
 }
 
@@ -71,56 +78,43 @@ void App::draw() {
 void App::process_input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            is_running_ = false;
-        }
-        switch (event.key.keysym.sym) {
-            case SDLK_UP:
-                if (event.key.type == SDL_KEYDOWN) {
-                    active_state_ |= UP_PRESSED;
-                } else if (event.key.type == SDL_KEYUP) {
-                    active_state_ ^= UP_PRESSED;
-                }
-                break;
-            case SDLK_DOWN:
-                if (event.key.type == SDL_KEYDOWN) {
-                    active_state_ |= DOWN_PRESSED;
-                } else if (event.key.type == SDL_KEYUP) {
-                    active_state_ ^= DOWN_PRESSED;
-                }
-                break;
-            case SDLK_LEFT:
-                if (event.key.type == SDL_KEYDOWN)
-                    active_state_ |= LEFT_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    active_state_ ^= LEFT_PRESSED;
-                break;
-            case SDLK_RIGHT:
-                if (event.key.type == SDL_KEYDOWN)
-                    active_state_ |= RIGHT_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    active_state_ ^= RIGHT_PRESSED;
-                break;
-            case SDLK_q:
-            case SDLK_ESCAPE:
+        switch (event.type) {
+            case SDL_QUIT:
                 is_running_ = false;
+                break;
+            case SDL_MOUSEMOTION:
+                printf("mouse moved\n");
+                break;
+            case SDL_MOUSEBUTTONUP:
+                printf("mouse up\n");
+                mouse_pos_ = {
+                    static_cast<float>(event.motion.x),
+                    static_cast<float>(event.motion.y),
+                };
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                printf("mouse down\n");
+                break;
+            case SDL_KEYDOWN:
+                printf("key\n");
+                switch (event.key.keysym.sym) {
+                    case SDLK_q:
+                    case SDLK_ESCAPE:
+                        is_running_ = false;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
     }
-    sprite_velocity_ = Vec2i{};
-    if (active_state_ & UP_PRESSED) {
-        sprite_velocity_.y = -5;
-    }
-    if (active_state_ & DOWN_PRESSED) {
-        sprite_velocity_.y = 5;
-    }
-    if (active_state_ & LEFT_PRESSED) {
-        sprite_velocity_.x = -5;
-    }
-    if (active_state_ & RIGHT_PRESSED) {
-        sprite_velocity_.x = 5;
-    }
+}
+
+void App::update_sprite_pos_() {
+    const Vec2f diff = sprite_pos_ - mouse_pos_;
+    const Vec2f sprite_velocity = -diff / 10.0;
+    sprite_pos_ += sprite_velocity;
 }
 
 #ifdef __EMSCRIPTEN__

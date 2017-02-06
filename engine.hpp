@@ -6,14 +6,6 @@
 #include <SDL2/SDL_image.h>
 #include "vec2.hpp"
 
-enum InputState {
-    NOTHING_PRESSED = 0,
-    UP_PRESSED = 1,
-    DOWN_PRESSED = 1<<1,
-    LEFT_PRESSED = 1<<2,
-    RIGHT_PRESSED = 1<<3
-};
-
 class Context {
     SDL_Renderer* renderer_;
     SDL_Window* window_;
@@ -35,23 +27,25 @@ public:
     ~Image();
 
     void draw_at(Context& context, const Vec2i& pos) const;
+    void draw_at(Context& context, const Vec2f& pos) const;
     const Vec2i& size() const;
 };
 
 class App {
     Context context_;
-    Vec2i sprite_pos_;
-    Vec2i sprite_velocity_;
+    Vec2f sprite_pos_;
+    Vec2f mouse_pos_;
     Image image_;
-    int active_state_; // TODO: InputState active_state
     bool is_running_;
 
+    // TODO: postfix `_`
     void draw();
     void process_input();
+    void update_sprite_pos_();
 
 public:
     App();
-    void tick();
+    void tick(); // TODO: make private
     void run();
 };
 
