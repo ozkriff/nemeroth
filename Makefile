@@ -1,5 +1,5 @@
 CXX_FLAGS += -O2
-CXX_FLAGS += -std=c++1y
+CXX_FLAGS += -std=c++11
 CXX_FLAGS += -Wall -Wextra -Wconversion -pedantic
 
 EMCC_FLAGS += -s USE_SDL=2
@@ -14,6 +14,7 @@ SOURCES = engine.cpp nemeroth.cpp
 HEADERS = engine.hpp
 
 all: $(SOURCES) $(HEADERS)
+	echo $(CXX) -o nemeroth $(CXX_FLAGS) $(NATIVE_FLAGS) $(SOURCES)
 	$(CXX) -o nemeroth $(CXX_FLAGS) $(NATIVE_FLAGS) $(SOURCES)
 
 html: $(SOURCES) $(HEADERS)
