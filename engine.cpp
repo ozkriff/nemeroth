@@ -131,7 +131,7 @@ void App::update_sprite_pos_() {
     sprite_pos_ += sprite_velocity;
 }
 
-void App::addClickListener(std::function<void(Vec2f)> callback) {
+void App::addClickListener(ClickCallback callback) {
     click_callback_ = callback;
 }
 

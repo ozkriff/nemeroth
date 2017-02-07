@@ -38,6 +38,8 @@ public:
     const Vec2i& size() const;
 };
 
+typedef std::function<void(Vec2f)> ClickCallback;
+
 class App {
     Context context_;
 
@@ -63,7 +65,7 @@ class App {
 public:
     App();
 
-    void addClickListener(std::function<void(Vec2f)> callback);
+    void addClickListener(ClickCallback callback);
     void run();
 };
 
