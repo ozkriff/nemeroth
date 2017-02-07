@@ -8,7 +8,7 @@ EMCC_FLAGS += -s SDL2_IMAGE_FORMATS='["png"]'
 EMCC_FLAGS += -s DISABLE_EXCEPTION_CATCHING=0
 EMCC_FLAGS += --preload-file assets
 
-NATIVE_FLAGS += -lSDL2 -lSDL2_image
+NATIVE_FLAGS += -lSDL2 -lSDL2_image -stdlib=libc++
 
 SOURCES = engine.cpp nemeroth.cpp
 HEADERS = engine.hpp
