@@ -4,9 +4,10 @@ dist: trusty
 
 language: cpp
 
-# TODO: Add gcc
 # TODO: Add emscripten
-compiler: clang
+compiler:
+    - gcc
+    - clang
 
 addons:
     - apt:

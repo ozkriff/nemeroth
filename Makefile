@@ -14,7 +14,7 @@ SOURCES = engine.cpp nemeroth.cpp
 HEADERS = engine.hpp
 
 all: $(SOURCES) $(HEADERS)
-	clang++ -o nemeroth $(CXX_FLAGS) $(NATIVE_FLAGS) $(SOURCES)
+	$(CXX) -o nemeroth $(CXX_FLAGS) $(NATIVE_FLAGS) $(SOURCES)
 
 html: $(SOURCES) $(HEADERS)
 	em++ -o index.html $(CXX_FLAGS) $(EMCC_FLAGS) $(SOURCES)
