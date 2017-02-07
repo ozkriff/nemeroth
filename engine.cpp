@@ -1,4 +1,3 @@
-// TODO: надо весь эмскриптен и сдл скрыть в "движке"
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -60,7 +59,8 @@ App::App()
     sprite_pos_{200, 100},
     mouse_pos_{sprite_pos_},
     image_{context_, std::string{"assets/daemon.png"}}, // TODO: extract from engine
-    is_running_{true}
+    is_running_{true},
+    click_callback_{nullptr}
 {}
 
 void App::tick_() {
@@ -91,6 +91,9 @@ void App::process_input_() {
                     static_cast<float>(event.motion.x),
                     static_cast<float>(event.motion.y),
                 };
+                if (click_callback_) {
+                    click_callback_(mouse_pos_);
+                }
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("mouse down\n");
@@ -115,6 +118,10 @@ void App::update_sprite_pos_() {
     const Vec2f diff = mouse_pos_ - sprite_pos_ ;
     const Vec2f sprite_velocity = diff / 10.0;
     sprite_pos_ += sprite_velocity;
+}
+
+void App::addClickListener(std::function<void(Vec2f)> callback) {
+    click_callback_ = callback;
 }
 
 #ifdef __EMSCRIPTEN__

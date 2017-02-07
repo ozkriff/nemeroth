@@ -2,6 +2,7 @@
 #define ENGINE_HPP
 
 #include <string>
+#include <functional>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "vec2.hpp"
@@ -33,10 +34,16 @@ public:
 
 class App {
     Context context_;
+
+    // TODO: вынести эти три
     Vec2f sprite_pos_;
     Vec2f mouse_pos_;
     Image image_;
+
+    // TODO: и добавить сцену с геттерами
+
     bool is_running_;
+    std::function<void(Vec2f)> click_callback_;
 
     void draw_();
     void process_input_();
@@ -49,6 +56,8 @@ class App {
 
 public:
     App();
+
+    void addClickListener(std::function<void(Vec2f)> callback);
     void run();
 };
 
