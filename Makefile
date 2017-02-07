@@ -10,8 +10,8 @@ EMCC_FLAGS += --preload-file assets
 
 NATIVE_FLAGS += -lSDL2 -lSDL2_image
 
-SOURCES = engine.cpp nemeroth.cpp
-HEADERS = engine.hpp
+SOURCES = engine.cpp nemeroth.cpp vec2.cpp
+HEADERS = engine.hpp vec2.hpp
 
 all: $(SOURCES) $(HEADERS)
 	clang++ -o nemeroth $(NATIVE_FLAGS) $(SOURCES) $(CXX_FLAGS)

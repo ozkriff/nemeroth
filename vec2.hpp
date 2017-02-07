@@ -69,6 +69,9 @@ struct Vec2 {
 typedef Vec2<float> Vec2f;
 typedef Vec2<int> Vec2i;
 
+Vec2f to_float(const Vec2i& v);
+Vec2i to_int(const Vec2f& v);
+
 template<class T>
 T dot_product(const Vec2<T>& a, const Vec2<T>& b) {
     return (a.x * b.x) + (a.y * b.y);
