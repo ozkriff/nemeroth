@@ -112,8 +112,8 @@ void App::process_input_() {
 }
 
 void App::update_sprite_pos_() {
-    const Vec2f diff = sprite_pos_ - mouse_pos_;
-    const Vec2f sprite_velocity = -diff / 10.0;
+    const Vec2f diff = mouse_pos_ - sprite_pos_ ;
+    const Vec2f sprite_velocity = diff / 10.0;
     sprite_pos_ += sprite_velocity;
 }
 
