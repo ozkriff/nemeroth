@@ -29,17 +29,14 @@ void Image::draw_at(Context& context, const Vec2i& pos) const {
 }
 
 void Image::draw_at(Context& context, const Vec2f& pos) const {
-    const Vec2i pos_i = {
-        static_cast<int>(pos.x),
-        static_cast<int>(pos.y),
-    };
-    draw_at(context, pos_i);
+    draw_at(context, to_int(pos));
 }
 
 const Vec2i& Image::size() const {
     return size_;
 }
 
+// TODO: SDL_WINDOW_RESIZABLE?
 Context::Context()
   : renderer_{nullptr},
     window_{nullptr}
@@ -52,6 +49,12 @@ Context::Context()
 Context::~Context() {
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
+}
+
+Vec2i Context::window_size() {
+    int h, w;
+    SDL_GetWindowSize(&window(), &w, &h);
+    return Vec2i{w, h};
 }
 
 App::App()
@@ -82,24 +85,32 @@ void App::process_input_() {
             case SDL_QUIT:
                 is_running_ = false;
                 break;
+            case SDL_FINGERDOWN:
+                break;
+            case SDL_FINGERUP: {
+                mouse_pos_ = Vec2f{event.tfinger.x, event.tfinger.y}
+                    * to_float(context_.window_size());
+                if (click_callback_) {
+                    click_callback_(mouse_pos_);
+                }
+                break;
+            }
+            case SDL_FINGERMOTION:
+                break;
             case SDL_MOUSEMOTION:
-                printf("mouse moved\n");
                 break;
             case SDL_MOUSEBUTTONUP:
-                printf("mouse up\n");
-                mouse_pos_ = {
-                    static_cast<float>(event.motion.x),
-                    static_cast<float>(event.motion.y),
-                };
+                if (event.button.which == SDL_TOUCH_MOUSEID) {
+                    continue;
+                }
+                mouse_pos_ = to_float(Vec2i{event.button.x, event.button.y});
                 if (click_callback_) {
                     click_callback_(mouse_pos_);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                printf("mouse down\n");
                 break;
             case SDL_KEYDOWN:
-                printf("key\n");
                 switch (event.key.keysym.sym) {
                     case SDLK_q:
                     case SDLK_ESCAPE:
@@ -145,7 +156,7 @@ void App::run() {
 void App::run() {
     while (is_running_) {
         tick_(); // TODO: pass deltatime
-        SDL_Delay(1000 / 60);
+        SDL_Delay(1000 / 60); // TODO: усыплять только на оставшееся время
     }
 }
 #endif

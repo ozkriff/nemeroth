@@ -15,6 +15,12 @@ public:
     const SDL_Renderer& renderer() const { return *renderer_; }
     SDL_Renderer& renderer() { return *renderer_; }
 
+    const SDL_Window& window() const { return *window_; }
+    SDL_Window& window() { return *window_; }
+
+    Vec2i window_size();
+
+    // пересортировать наверх
     Context();
     ~Context();
 };
