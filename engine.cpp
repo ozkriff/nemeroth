@@ -43,7 +43,7 @@ Context::Context()
 {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(600, 400, 0, &window_, &renderer_);
-    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer_, 0, 0, 150, 255);
 }
 
 Context::~Context() {
