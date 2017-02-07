@@ -4,9 +4,11 @@ language: cpp
 # TODO: Add emscripten
 compiler: clang
 
-before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get install libsdl2-dev libsdl2-image-dev -qq
+addons:
+    - apt:
+        - packages:
+            - libsdl2-dev
+            - libsdl2-image-dev
 
 script:
     - make
