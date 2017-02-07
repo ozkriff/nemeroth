@@ -17,4 +17,4 @@ all: $(SOURCES) $(HEADERS)
 	clang++ -o nemeroth $(NATIVE_FLAGS) $(SOURCES) $(CXX_FLAGS)
 
 html: $(SOURCES) $(HEADERS)
-	em++ -o nemeroth.html $(EMCC_FLAGS) $(SOURCES) $(CXX_FLAGS)
+	em++ -o index.html $(EMCC_FLAGS) $(SOURCES) $(CXX_FLAGS)
