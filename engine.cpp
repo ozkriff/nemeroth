@@ -75,6 +75,9 @@ void App::tick_() {
 void App::draw_() {
     SDL_RenderClear(&context_.renderer());
     image_.draw_at(context_, sprite_pos_);
+    for (const auto& sprite : scene.sprites) {
+        sprite->image->draw_at(context_, sprite->pos);
+    }
     SDL_RenderPresent(&context_.renderer());
 }
 
